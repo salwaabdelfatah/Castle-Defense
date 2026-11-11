@@ -3,7 +3,7 @@
 
 
 
-enum Region
+enum RegionType
 {
     REGION_A,
     REGION_B,
