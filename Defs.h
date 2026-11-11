@@ -5,31 +5,31 @@
 
 enum Region
 {
-    region_A,
-    region_B,
-    region_C,
-    region_D
+    REGION_A,
+    REGION_B,
+    REGION_C,
+    REGION_D
 };
 
 enum EnemyType
 {
-    Fighter,
-    Healer,
-    Freezer
+    FIGHTER = 1,
+    HEALER = 2,
+    FREZEER = 3
 };
 
 enum EnemyState
 {
-    Inactive,
-    Active,
-    Frozen,
-    Killed
+    INACTIVE,
+    ACTIVE,
+    FROZEN,
+    KILLED
 };
 
-extern const int Start_Distance = 60;
-extern const int Min_Distance = 2;
-extern const int Max_Kills_Per_Step = 4;
-extern const int Healer_Percent_Max = 20;
+extern const int START_DISTANCE = 60;
+extern const int MIN_DISTANCE = 2;
+extern const int MAX_KILLS_PER_STEP = 4;
+extern const int HEALER_PERCENT_MAX = 20;
 
 
 Region NextRegion(Region region);
