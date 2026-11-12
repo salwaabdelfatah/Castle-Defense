@@ -49,7 +49,7 @@ public:
 
 	bool IsActive(int _time);
 
-	virtual void Move()=0;
+	virtual void Move(int _time);
 	virtual void Attack() = 0;
 
 	virtual ~Enemy();
