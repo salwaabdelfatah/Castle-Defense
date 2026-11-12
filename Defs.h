@@ -32,6 +32,6 @@ extern const int MAX_KILLS_PER_STEP = 4;
 extern const int HEALER_PERCENT_MAX = 20;
 
 
-Region NextRegion(Region region);
+RegionType NextRegion(RegionType region);
 
 #endif
