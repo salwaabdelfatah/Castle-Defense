@@ -1,5 +1,5 @@
 #pragma once
-#include "Defs.h"
+#include "../Defs.h"
 class Tower
 {
 private:
