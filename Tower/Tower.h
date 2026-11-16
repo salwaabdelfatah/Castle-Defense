@@ -36,8 +36,7 @@ public:
     // Adds ice. Returns true when the threshold is reached (the ice counter is reset).
     bool AddIce(double amount);
 
-    // Freezes the tower during time steps fromStep .. fromStep + steps - 1.
-    //          int currentTime, int duration
+
     void Freeze(int step);
     #pragma endregion
 

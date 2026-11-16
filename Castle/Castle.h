@@ -15,6 +15,6 @@ public:
     Tower& GetTower(RegionType region);
     const Tower& GetTower(RegionType region) const;
 
-    // [Phase 2] True when all four towers are destroyed (the game is lost).
+    //True when all four towers are destroyed (the game is lost).
     bool AllTowersDestroyed() const;
 };
