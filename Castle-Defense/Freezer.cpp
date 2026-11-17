@@ -8,7 +8,7 @@ Freezer::~Freezer()
 {
 }
 
-void Freezer::Move(){}
+void Freezer::Move(int _time){}
 
 void Freezer::Attack()
 {

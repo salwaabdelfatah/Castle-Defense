@@ -9,7 +9,7 @@ Enemy::Enemy(int _id, EnemyType _type, RegionType _region, int _arrivaltime, dou
 	Health = _health;
 	OriginalHealth = _health;
 	Power = _power;
-	ReloadPeriod =_reloadedperiod;
+	ReloadPeriod = _reloadedperiod;
 	Distance = START_DISTANCE;
 	State = INACTIVE;
 	FirstShotTime = -1;
@@ -23,10 +23,10 @@ Enemy::~Enemy()
 
 bool Enemy::IsActive(int _time)
 {
-	return ArrivalTime<=_time && Health>0;
+	return ArrivalTime <= _time && Health > 0;
 }
 
-void Enemy::SetID(int _id) { Id = _id;}
+void Enemy::SetID(int _id) { Id = _id; }
 void Enemy::SetType(EnemyType _type) { Type = _type; }
 void Enemy::SetRegion(RegionType _region) { Region = _region; }
 void Enemy::SetArrivalTime(int _arrivaltime) { ArrivalTime = _arrivaltime; }
@@ -52,7 +52,7 @@ EnemyState Enemy::GetState() { return State; }
 int Enemy::GetFirstShotTime() { return FirstShotTime; }
 int Enemy::GetKillTime() { return KillTime; }
 int Enemy::GetFrozenUntil() { return FrozenUntil; }
-void Enemy:: Move(int _time) {
+void Enemy::Move(int _time) {
 	if (State == FROZEN) {
 		return;
 	}
@@ -64,6 +64,6 @@ void Enemy:: Move(int _time) {
 	if (weak && (time % 2 != 0)) {
 		return;
 	}
-	Distance--; 
+	Distance--;
 
 }
