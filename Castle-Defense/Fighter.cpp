@@ -8,7 +8,7 @@ Fighter::~Fighter()
 {
 }
 
-void Fighter::Move(){}
+void Fighter::Move(int _time){}
 
 void Fighter::Attack()
 {
