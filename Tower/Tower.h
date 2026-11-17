@@ -3,15 +3,14 @@
 class Tower
 {
 private:
-    int        id;
+    int id;
     RegionType region;
-    double     health;
-    double     power;
-    int        maxTargets;
-    double     iceAccumulated;
-    int        frozenFrom;
-    int        frozenUntil;
-    double     damageTaken;
+    double health;
+    double power;
+    int maxTargets;
+    double iceAccumulated;
+    int frozenStep;
+    double damageTaken;
 public:
     static const double FREEZE_THRESHOLD;
     Tower();
@@ -37,9 +36,8 @@ public:
     // Adds ice. Returns true when the threshold is reached (the ice counter is reset).
     bool AddIce(double amount);
 
-    // Freezes the tower during time steps fromStep .. fromStep + steps - 1.
-    //          int currentTime, int duration
-    void Freeze(int fromStep, int steps);
+
+    void Freeze(int step);
     #pragma endregion
 
     
