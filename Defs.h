@@ -26,10 +26,10 @@ enum EnemyState
     KILLED
 };
 
-extern const int START_DISTANCE = 60;
-extern const int MIN_DISTANCE = 2;
-extern const int MAX_KILLS_PER_STEP = 4;
-extern const int HEALER_PERCENT_MAX = 20;
+ const int START_DISTANCE = 60;
+ const int MIN_DISTANCE = 2;
+ const int MAX_KILLS_PER_STEP = 4;
+ const int HEALER_PERCENT_MAX = 20;
 
 
 RegionType NextRegion(RegionType region);
