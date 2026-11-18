@@ -1,10 +1,14 @@
+
 #ifndef FILELOADER_H
 #define FILELOADER_H
+
 #include "Castle.h"
 #include "EnemyLists.h"
+
 class FileLoader
 {
 public:
-    bool Load(const char* fileName, Castle& castle, EnemyLists& lists);
+    static bool Load(const char* fileName, Castle& castle, EnemyLists& lists);
 };
+
 #endif

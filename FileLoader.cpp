@@ -1,36 +1,43 @@
 #include "FileLoader.h"
-#include <iostream>
-#include <fstream>
 #include "Fighter.h"
 #include "Healer.h"
 #include "Defs.h"
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 bool FileLoader::Load(const char* fileName, Castle& castle, EnemyLists& lists)
 {
-    fstream file;
-    file.open(fileName, ios::in);
+    ifstream file(fileName);
 
     if (!file.is_open())
     {
-        cout << "Error: Cannot open input file." << endl;
+        cout << "Error: Cannot open input file \""
+             << fileName << "\"." << endl;
         return false;
     }
 
     int towerHealth, maxTargets, towerPower;
+
     if (!(file >> towerHealth >> maxTargets >> towerPower))
     {
-        cout << "Error: Invalid file header." << endl;
+        cout << "Error: First line must contain TH N TP." << endl;
+        file.close();
+        return false;
+    }
+
+    if (towerHealth <= 0 || maxTargets < 0 || towerPower < 0)
+    {
+        cout << "Error: Invalid tower values." << endl;
         file.close();
         return false;
     }
 
     castle.Init(towerHealth, maxTargets, towerPower);
 
-    int id, type, arrivalTime, power, reloadPeriod;
-    double health;
-    char regionLetter;
-    int totalEnemies = 0, healerCount = 0;
+    int totalEnemies = 0;
+    int healerCount = 0;
+    int id;
     bool foundEnd = false;
 
     while (file >> id)
@@ -41,14 +48,20 @@ bool FileLoader::Load(const char* fileName, Castle& castle, EnemyLists& lists)
             break;
         }
 
-        if (!(file >> type >> arrivalTime >> health >> power >> reloadPeriod >> regionLetter))
+        int type, arrivalTime, power, reloadPeriod;
+        double health;
+        char regionLetter;
+
+        if (!(file >> type >> arrivalTime >> health
+                  >> power >> reloadPeriod >> regionLetter))
         {
-            cout << "Error: Invalid enemy information." << endl;
+            cout << "Error: Invalid enemy row." << endl;
             file.close();
             return false;
         }
 
         RegionType region;
+
         if (regionLetter == 'A' || regionLetter == 'a')
             region = REGION_A;
         else if (regionLetter == 'B' || regionLetter == 'b')
@@ -64,30 +77,33 @@ bool FileLoader::Load(const char* fileName, Castle& castle, EnemyLists& lists)
             return false;
         }
 
-        if (arrivalTime < 0 || health <= 0 || power < 0 || reloadPeriod < 0)
+        if (arrivalTime < 0 || health <= 0 ||
+            power < 0 || reloadPeriod < 0)
         {
             cout << "Error: Invalid enemy values." << endl;
             file.close();
             return false;
         }
 
-        Enemy* newEnemy = NULL;
+        Enemy* created = NULL;
 
         if (type == FIGHTER)
-            newEnemy = new Fighter(id, region, arrivalTime, health, power, reloadPeriod);
+            created = new Fighter(id, region, arrivalTime,
+                                  health, power, reloadPeriod);
         else if (type == HEALER)
         {
-            newEnemy = new Healer(id, region, arrivalTime, health, power, reloadPeriod);
+            created = new Healer(id, region, arrivalTime,
+                                 health, power, reloadPeriod);
             healerCount++;
         }
         else
         {
-            cout << "Error: Phase 1 accepts only Fighter and Healer enemies." << endl;
+            cout << "Error: Phase 1 accepts only types 1 and 2." << endl;
             file.close();
             return false;
         }
 
-        lists.AddInactive(newEnemy);
+        lists.AddInactive(created);
         totalEnemies++;
     }
 
@@ -95,19 +111,19 @@ bool FileLoader::Load(const char* fileName, Castle& castle, EnemyLists& lists)
 
     if (!foundEnd)
     {
-        cout << "Error: The file must end with -1." << endl;
+        cout << "Error: Input file must end with -1." << endl;
         return false;
     }
 
     if (totalEnemies == 0)
     {
-        cout << "Error: The file contains no enemies." << endl;
+        cout << "Error: No enemies found." << endl;
         return false;
     }
 
     if (healerCount * 100 > totalEnemies * HEALER_PERCENT_MAX)
     {
-        cout << "Error: Healers cannot exceed 20 percent of all enemies." << endl;
+        cout << "Error: Healers exceed the allowed percentage." << endl;
         return false;
     }
 
