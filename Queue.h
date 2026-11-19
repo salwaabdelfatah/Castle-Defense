@@ -7,7 +7,7 @@ class Queue
 {
     doubleLinkedList<T> list;
 public:
-    void Enqueue(T& item) 
+    void Enqueue(const T& item) 
     { 
         list.insertEnd(item); 
     }
@@ -15,13 +15,13 @@ public:
     { 
         return list.removeFirst(out); 
     }
-    bool Front(T& out){ 
+    bool Front(T& out) const { 
         return list.GetAt(0, out); 
     }
-    int  Count(){ 
+    int  Count() const{ 
         return list.Count(); 
     }
-    bool IsEmpty(){ 
+    bool IsEmpty() const{ 
         return list.isEmpty(); 
     }
 };

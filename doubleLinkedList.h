@@ -58,17 +58,17 @@ public:
 		return removeNode(head);
 	}
 
-	int Count() {
+	int Count() const {
 		return count;
 	}
-	bool isEmpty() {
+	bool isEmpty() const {
 		return count == 0;
 	}
-	Node<T>* GetHead(){
+	Node<T>* GetHead() const{
 		return head; 
 	}
 
-	Node<T>* Find(const T& item) 
+	Node<T>* Find(const T& item) const
 	{
 		Node<T>* c = head;
 
@@ -82,7 +82,7 @@ public:
 
 		return nullptr;
 	}
-	bool GetAt(int index, T& out)
+	bool GetAt(int index, T& out) const
 	{
 		if (index < 0 || index >= count) 
 			return false;

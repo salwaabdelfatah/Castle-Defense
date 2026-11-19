@@ -17,13 +17,13 @@ public:
 		data = value;
 	}
 
-	T getData() {
+	T getData() const {
 		return data;
 	}
-	Node<T>* getNext() {
+	Node<T>* getNext() const {
 		return next;
 	}
-	Node<T>* getPrev() {
+	Node<T>* getPrev() const {
 		return prev;
 	}
 };
