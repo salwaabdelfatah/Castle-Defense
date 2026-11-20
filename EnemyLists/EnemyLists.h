@@ -6,7 +6,7 @@
 #include "../Defs.h"
 class EnemyLists
 {
-    Queue<Enemy*>            inactive;      // all regions, sorted by arrival time
+    Queue<Enemy*> inactive;      // all regions, sorted by arrival time
     doubleLinkedList<Enemy*> active[4];     // one list per region (frozen enemies stay here too)
     doubleLinkedList<Enemy*> killed;        // all regions, in the order they were killed
     int killedCount[4];                     // killed enemies per region (status bar, O(1))
