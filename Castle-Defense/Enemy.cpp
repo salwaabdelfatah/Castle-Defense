@@ -52,18 +52,18 @@ EnemyState Enemy::GetState() { return State; }
 int Enemy::GetFirstShotTime() { return FirstShotTime; }
 int Enemy::GetKillTime() { return KillTime; }
 int Enemy::GetFrozenUntil() { return FrozenUntil; }
-void Enemy::Move(int _time) {
-	if (State == FROZEN) {
+void Enemy::MoveOneStep(int _time)
+{
+	if (State == FROZEN)
 		return;
-	}
-	if (Distance <= MIN_DISTANCE) {
-		return;
-	}
-	bool weak = Health < 0.5 * OriginalHealth;
-	int time = _time - ArrivalTime;
-	if (weak && (time % 2 != 0)) {
-		return;
-	}
-	Distance--;
 
+	if (Distance <= MIN_DISTANCE)
+		return;
+
+	bool weak = Health < 0.5 * OriginalHealth;
+	int elapsed = _time - ArrivalTime;
+	if (weak && elapsed % 2 != 0)
+		return;
+
+	Distance--;
 }
