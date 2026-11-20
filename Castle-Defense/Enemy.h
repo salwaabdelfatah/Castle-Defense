@@ -17,6 +17,7 @@ protected:
 	int FirstShotTime;
 	int KillTime;
 	int FrozenUntil;
+	void MoveOneStep(int _time);
 public:
 	Enemy(int _id, EnemyType _type, RegionType _region, int _arrivaltime,double _health, int _power, int _reloadedperiod);
 
@@ -49,7 +50,7 @@ public:
 
 	bool IsActive(int _time);
 
-	virtual void Move(int _time);
+	virtual void Move(int _time) = 0;
 	virtual void Attack() = 0;
 
 	virtual ~Enemy();

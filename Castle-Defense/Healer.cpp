@@ -8,7 +8,9 @@ Healer::~Healer()
 {
 }
 
-void Healer::Move(int _time){}
+void Healer::Move(int _time){
+	MoveOneStep(_time);
+}
 
 void Healer::Attack()
 {

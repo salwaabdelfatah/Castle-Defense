@@ -8,7 +8,9 @@ Fighter::~Fighter()
 {
 }
 
-void Fighter::Move(int _time){}
+void Fighter::Move(int _time){
+	MoveOneStep(_time);
+}
 
 void Fighter::Attack()
 {
