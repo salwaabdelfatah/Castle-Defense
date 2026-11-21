@@ -39,19 +39,28 @@ void Enemy::SetFirstShotTime(int _time) { FirstShotTime = _time; }
 void Enemy::SetKillTime(int _time) { KillTime = _time; }
 void Enemy::SetFrozenUntil(int _time) { FrozenUntil = _time; }
 
-int Enemy::GetID() { return Id; }
-EnemyType Enemy::GetType() { return Type; }
-RegionType Enemy::GetRegion() { return Region; }
-int Enemy::GetArrivalTime() { return ArrivalTime; }
-double Enemy::GetHealth() { return Health; }
-double Enemy::GetOriginalHealth() { return OriginalHealth; }
-int Enemy::GetPower() { return Power; }
-int Enemy::GetReloadedPeriod() { return ReloadPeriod; }
-int Enemy::GetDistance() { return Distance; }
-EnemyState Enemy::GetState() { return State; }
-int Enemy::GetFirstShotTime() { return FirstShotTime; }
-int Enemy::GetKillTime() { return KillTime; }
-int Enemy::GetFrozenUntil() { return FrozenUntil; }
+int Enemy::GetID() const { return Id; }
+EnemyType Enemy::GetType() const { return Type; }
+RegionType Enemy::GetRegion() const { return Region; }
+int Enemy::GetArrivalTime() const { return ArrivalTime; }
+double Enemy::GetHealth() const { return Health; }
+double Enemy::GetOriginalHealth() const { return OriginalHealth; }
+int Enemy::GetPower() const { return Power; }
+int Enemy::GetReloadedPeriod() const { return ReloadPeriod; }
+int Enemy::GetDistance() const { return Distance; }
+EnemyState Enemy::GetState() const { return State; }
+int Enemy::GetFirstShotTime() const { return FirstShotTime; }
+int Enemy::GetKillTime() const { return KillTime; }
+int Enemy::GetFrozenUntil() const { return FrozenUntil; }
+
+color Enemy::GetColor() const
+{
+	if (Type == HEALER)
+		return ORANGERED;
+	if (Type == FREEZER)
+		return DEEPSKYBLUE;
+	return DARKBLUE;
+}
 void Enemy::MoveOneStep(int _time)
 {
 	if (State == FROZEN)

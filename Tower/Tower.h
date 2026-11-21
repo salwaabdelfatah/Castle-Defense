@@ -1,5 +1,5 @@
 #pragma once
-#include "../Defs.h"
+#include "../Castle-Defense/Defs.h"
 class Tower
 {
 private:
@@ -9,7 +9,8 @@ private:
     double power;
     int maxTargets;
     double iceAccumulated;
-    int frozenStep;
+    int frozenFrom;
+    int frozenUntil;
     double damageTaken;
 public:
     static const double FREEZE_THRESHOLD;
@@ -37,7 +38,7 @@ public:
     bool AddIce(double amount);
 
 
-    void Freeze(int step);
+    void Freeze(int fromStep, int steps);
     #pragma endregion
 
     
