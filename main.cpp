@@ -10,11 +10,11 @@ int main()
 	string fileName;
 
 	cout << "Castle Battle - Phase 1" << endl;
-	cout << "Enter the input file name (press ENTER for Phase1_small.txt): ";
+	cout << "Enter the input file name (Default: Phase1_small.txt): ";
 	getline(cin, fileName);
 
 	if (fileName == "")
-		fileName = "TestCases/Phase1_healers.txt";
+		fileName = "TestCases/Phase1_small.txt";
 
 	Battle battle;
 	if (!battle.Init(fileName.c_str()))
