@@ -133,7 +133,6 @@
     <ClCompile Include="Fighter.cpp" />
     <ClCompile Include="Freezer.cpp" />
     <ClCompile Include="Healer.cpp" />
-    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
