@@ -15,7 +15,7 @@ enum EnemyType
 {
     FIGHTER = 1,
     HEALER = 2,
-    FREZEER = 3
+    FREEZER = 3
 };
 
 enum EnemyState
