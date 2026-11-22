@@ -2,8 +2,8 @@
 #ifndef FILELOADER_H
 #define FILELOADER_H
 
-#include "Castle.h"
-#include "EnemyLists.h"
+#include "../Castle/Castle.h"
+#include "../EnemyLists/EnemyLists.h"
 
 class FileLoader
 {

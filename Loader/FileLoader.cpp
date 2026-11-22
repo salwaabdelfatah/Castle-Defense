@@ -1,7 +1,7 @@
 #include "FileLoader.h"
-#include "Fighter.h"
-#include "Healer.h"
-#include "Defs.h"
+#include "../Castle-Defense/Fighter.h"
+#include "../Castle-Defense/Healer.h"
+#include "../Castle-Defense/Defs.h"
 #include <iostream>
 #include <fstream>
 using namespace std;

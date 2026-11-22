@@ -1,5 +1,5 @@
 #pragma once
-#include "../Defs.h"
+#include "../Castle-Defense/Defs.h"
 #include "../Tower/Tower.h"
 class Castle
 {

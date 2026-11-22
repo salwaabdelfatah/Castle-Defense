@@ -1,9 +1,9 @@
 #pragma once
 #include "../Castle-Defense/Enemy.h"
-#include "../Queue.h"
-#include "../doubleLinkedList.h"
-#include "../Node.h"
-#include "../Defs.h"
+#include "../DS/Queue.h"
+#include "../DS/doubleLinkedList.h"
+#include "../DS/Node.h"
+#include "../Castle-Defense/Defs.h"
 class EnemyLists
 {
     Queue<Enemy*> inactive;      // all regions, sorted by arrival time
