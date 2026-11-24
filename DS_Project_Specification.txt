@@ -1,0 +1,249 @@
+Castle Defense Specification Notes
+
+1. Project Overview:
+
+A castle is protected by four towers, one per region (A, B, C, D, clockwise). Every day, enemies attack the castle and damage its towers. 
+The program simulates the battle one time step at a time and calculates statistics.
+
+Game results:
+
+WIN: all enemies are killed.
+LOSS: all four towers are destroyed (health ≤ 0).
+DRAWN: neither WIN nor LOSS.
+
+-----------------------------------------------------
+
+2. Defs.h (enums and constants)
+
+Region type: REGION_A, REGION_B, REGION_C, REGION_D. Clockwise order: A → B → C → D → A.
+Enemy type: FIGHTER = 1, HEALER = 2, FREEZER = 3.
+Enemy state: INACTIVE, ACTIVE, FROZEN, KILLED.
+
+Constants:
+
+START_DISTANCE = 60: distance from the castle at arrival. It decreases by 1 each time step (slow enemies move every 2 steps, see Enemy).
+MIN_DISTANCE = 2: an enemy cannot get closer than this to its tower.
+MAX_KILLS_PER_STEP = 4: Phase 1 random kill quota.
+HEALER_PERCENT_MAX = 20: healers must not exceed 20% of all enemies.
+REGION_COUNT = 4.
+
+-----------------------------------------------------
+
+3. Input File
+
+First line: TH N TP
+TH: starting health of all towers
+N: maximum number of enemies a tower can attack per time step
+TP: tower attack power
+Each enemy line: S TYP T H POW RLD REG
+S: unique sequence number
+TYP: 1 = fighter, 2 = healer (the input has no freezers)
+T: arrival time step
+H: health
+POW: power
+RLD: reload period
+REG: region letter (A to D)
+Order: sorted by arrival time, ascending.
+End: the last line is -1.
+
+4. Simulation Rules
+
+Time advances in discrete steps of 1 unit.
+Each enemy starts at distance 60 and moves toward its tower.
+If a tower is destroyed (health ≤ 0), every enemy in its region (current and incoming) moves to the next region clockwise. Each enemy keeps the distance it had reached.
+An enemy with health ≤ 0 is killed.
+
+-----------------------------------------------------
+5. Class Tower
+
+Attributes: id, region, starting health, power, N (max targets per step), ice accumulated, frozen-until time, total damage taken.
+
+Rules:
+
+A tower attacks only enemies in its own region.
+A tower can attack any enemy type.
+Each time step, it attacks at most N enemies, chosen by priority.
+Each attack is a bullet or ice. Ice is fired at random time steps, and ice fires must be less than 20% of all tower fires.
+An ice shot freezes the enemy it hits (see Enemy, Frozen state).
+A frozen tower cannot attack. It can be damaged only by fighters. Freezer ice has no effect on it.
+A tower is destroyed when health ≤ 0. Health never goes below 0, and only the damage actually taken is recorded, for the output file.
+
+Target priority (choosing N enemies):
+
+Must depend on at least three of: distance, type, health, power, state (active or frozen), remaining reload steps, most recent attackers.
+A closer enemy must have higher priority, so distance reduces priority.
+ Priority Formula = power + health + recent-attack bonus - distance. The team must define and justify the exact formula.
+
+Damage functions:
+
+Fighter damage to tower (DET): DET = K × Enemy power / Enemy distance. K = 1 if the enemy is healthy, K = 0.5 if health < 0.5 × original health.( This formula belongs to the Fighter.)
+Tower damage to enemy (DTE): DTE = tower power / (enemy distance × K), with K = 2 for healers and K = 1 for other types. Verify the exact form against the spec figure on page 5, because the extracted text is ambiguous.
+
+-----------------------------------------------------
+
+6. Class Castle
+
+Holds four Tower objects (composition), indexed by region.
+Init(TH, N, TP): sets each tower's region and the starting values from the input file.
+GetTower(region).
+AllTowersDestroyed(): used to detect LOSS.
+
+-----------------------------------------------------
+
+7. Class Enemy (abstract base class)
+
+Properties:
+
+Sequence ID (S), type, region
+Arrival time (T)
+Health and original health
+Power
+Reload period: after each action, the enemy waits this many steps before it can act again. During reload it can move, but it cannot act (attack, heal, or freeze), and it cannot damage the tower.
+Distance to its tower (unchanged when it is transported to another region)
+State: INACTIVE, ACTIVE, FROZEN, KILLED
+Frozen-until time
+First shot time: the time step when a tower first shot this enemy
+Kill time (KTS): the time step when the enemy was killed
+
+Timing statistics:
+
+First-shot delay: FD = FirstShotTime − ArrivalTime
+Kill delay: KD = KillTime − FirstShotTime
+Lifetime: LT = FD + KD = KillTime − ArrivalTime
+
+Functions:
+
+Move(time): pure virtual (spec Appendix A). Each subclass implements it by calling the shared protected helper MoveOneStep. The helper decreases the distance by 1 each step. If health < 0.5 × original health, the enemy moves 1 meter every 2 steps, counted from its arrival. A frozen enemy does not move.
+IsActive(time): true when health > 0 and ArrivalTime ≤ time.
+Act(): checks whether the enemy is at an action step, then calls Attack(). Team design, not defined in the spec.
+Attack(): pure virtual. Performs the type's action. After an action, the next action step is current time + reload period + 1. Example: arrival 5, reload 3 → acts at 5, 9, 13.
+
+Key rules:
+
+Only active enemies can act (fight, heal, or freeze).
+An enemy attacks only the tower of its own region.
+Enemies can move during reload but cannot act.
+
+States:
+
+INACTIVE: ArrivalTime > current time.
+ACTIVE: health > 0 and ArrivalTime ≤ current time.
+FROZEN: for a period after the tower fires ice at it. Proposal: freeze time = tower power / ice amount. The team must justify it.
+KILLED: health ≤ 0.
+
+-----------------------------------------------------
+
+8. Enemy Types
+
+1-Fighter
+
+Attacks the tower of its region, using DET (see Tower).
+Deals no damage during reload.
+
+2-Healer
+
+Cannot attack the tower.
+Heals enemies in its region that are within 2 meters, forward or backward.
+Cannot heal killed enemies.
+Proposal: heal amount = healer power / enemy distance.
+Team decision: whether healed health can exceed original health.
+
+3-Freezer
+
+Attacks the tower by throwing ice.
+Ice accumulates on the tower. When it reaches the threshold, the tower is frozen for one time step.
+Proposal: ice amount = enemy power / enemy distance. It must stay below the threshold, so one shot can never freeze a tower.
+
+-----------------------------------------------------
+
+9. Class EnemyLists
+
+Holds:
+
+inactive_: one queue for all enemies that have not arrived yet.
+active_[4]: one list per region for active enemies.
+killed_: one list for killed enemies.
+killedCount_[4] and totalCount_: counters.
+
+Functions:
+
+AddInactive(enemy): used during loading, in file order.
+ActivateArrivals(time): moves enemies from the front of the queue into their region's active list while their arrival time has come.
+MoveToKilled(enemy): removes the enemy from its active list, appends it to killed_, and increments its region's counter.
+GetActiveAt(index): returns an active enemy across all regions, for random picks (Phase 1).
+FillDrawArray(arr, max): copies active enemy pointers into the array the GUI draws from.
+ActiveCount(region) and ActiveCountByType(region, type): used by the status bar.
+KilledCount(region).
+AllFinished(): true when no inactive and no active enemies remain.
+TransportRegion(from, to) (Phase 2): moves a destroyed tower's active enemies to the next region.
+Destructor: deletes every enemy exactly once. Each enemy is in one list at a time, so walking all lists visits each enemy once.
+
+-----------------------------------------------------
+
+10. Class FileLoader
+
+Reads the first line and calls Castle::Init.
+Reads each enemy line until -1, converts the type and region codes to enums with explicit casts, creates a Fighter or Healer, and adds it to the inactive queue.
+Checks that healers are at most 20% of all enemies.
+Reports a missing file or a malformed line, and returns an error.
+Phase 1: rejects type 3, because the input file has no freezers.
+
+-----------------------------------------------------
+
+11. Class Battle (controller)
+
+Holds: Castle, EnemyLists, GUI, current time, mode, draw array, pending kills.
+
+Functions: Init(path, mode), Run(), Step(), PrintStatusBar() (interactive mode), WriteOutput().
+
+-----------------------------------------------------
+
+12-Used Data Structure:
+
+1.The inactive enemies are kept in a singly linked queue with head and tail pointers. Enqueue and dequeue both run in constant time, and the queue keeps the file's arrival order.
+2.Each region has its own doubly linked list of active enemies. Insert is constant time, and removing a known enemy is constant time because each node has a previous pointer. Searching for an enemy is linear.
+3.The killed enemies are kept in a linked list with a tail pointer. Appending is constant time, and reading them for the output is linear.
+4.The killed count for each region is a fixed array of four integers, so reading it is constant time.
+5.The four towers are a fixed array inside the castle, indexed by region, so access is constant time.
+6.The kills chosen for the next step are a fixed array of four enemy pointers.
+7.The draw array is a dynamically allocated array of enemy pointers, filled from the active lists at each step and read by the graphics function. Filling and reading it is linear in the number of active enemies.
+
+-----------------------------------------------------
+
+13-Phase 1: What the program does:
+
+1.Enemies: an abstract Enemy base class with the shared movement rules. Fighter, Healer, and Freezer set their types and have empty attack stubs for Phase 2.
+2.Towers and castle: four towers, one per region, with damage that never goes below 0 and is recorded for the output.
+3.Foundation: enums and constants in Defs, plus our own singly linked queue, doubly linked list, and templates. No STL.
+4.Enemy lists: one inactive queue, four active lists (one per region), one killed list, and per-region kill counters. The destructor frees each enemy once.
+5.File loading: reads the tower settings and enemy lines, validates them, enforces the 20% healer limit, and rejects a missing file.
+6.Battle: runs the time steps: activate arrivals, apply last step's kills, pick up to 4 random kills, draw, print the status bar, and wait for a click.
+7.Data structures: queue for inactive enemies, doubly linked lists for active enemies per region, linked list for killed enemies, fixed arrays for towers, kill counts, and pending kills, and a dynamic pointer array for drawing.
+
+-----------------------------------------------------
+
+14-To be continued in Phase 2
+
+1.Enemies: enforce reload periods, implement Attack for each type (damage, healing, ice), and set first-shot and kill times. The Attack signature needs to change so Battle applies the effects, and the other members need to agree on it first.
+2.Towers: fire logic with the 20% ice cap, frozen towers that cannot fire, the freeze mechanism, and recorded damage.
+3.Castle: tower reconstruction (bonus).
+4.Lists: transport enemies to the next region when a tower is destroyed, and store a node pointer in each enemy for constant-time removal.
+5.Battle and output: the Phase 2 step order, priority-based target selection, WIN/LOSS/DRAWN detection, the output file with same-step sorting, and both modes with the full status bar.
+6.Formulas to agree on: healing, ice amount, freeze duration, target priority, and the tower-to-enemy damage.
+7.Testing: six test input files with output files, and integration on all of them.
+
+-------------------------------------------------------
+
+15-Output File
+
+Produced in both modes.
+
+Killed enemies: one line per killed enemy: KTS S FD KD LT. Sort by KTS ascending. Enemies killed in the same step are sorted by FD. The killed list is already in KTS order, so only same-step groups need sorting.
+Tower damage: T1_Total_Damage T2_Total_Damage T3_Total_Damage T4_Total_Damage.
+Result: Game is WIN, Game is LOSS, or Game is DRAWN.
+Statistics
+WIN: total number of enemies, average FD, average KD.
+LOSS or DRAWN: number of killed enemies, number of alive enemies (active and inactive), average FD and average KD for killed enemies only.
+14. Modes
+Silent: writes only the output file. No drawing.
+Interactive: draws the battle, shows the status bar, and waits for a mouse click before each step. The output file is also written at the end.
