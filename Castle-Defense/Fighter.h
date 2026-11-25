@@ -5,8 +5,9 @@ class Fighter:public Enemy
 {
 public:
 	Fighter(int _id, RegionType _region, int _arrivaltime, double _health, int _power, int _reloadedperiod);
+	~Fighter();
 	void Move(int _time);
-	void Act(int _time);
-	 ~Fighter();
+	void Attack();
+
 };
 #endif

@@ -1,6 +1,7 @@
 #ifndef ENEMY_H
 #define ENEMY_H
-#include "Defs.h"
+#include "../Castle-Defense/Defs.h"
+#include "../CMUgraphicsLib/colors.h"
 class Enemy 
 {
 protected:
@@ -37,19 +38,20 @@ public:
 	void SetNextActionTime(int _time);
 	int  GetNextActionTime();
 
-	int GetID();
-	EnemyType GetType();
-	RegionType GetRegion();
-	int GetArrivalTime();
-	double GetHealth();
-	double GetOriginalHealth();
-	int GetPower();
-	int GetReloadedPeriod();
-	int GetDistance();
-	EnemyState GetState();
-	int GetFirstShotTime();
-	int GetKillTime();
-	int GetFrozenUntil();
+	int GetID() const;
+	EnemyType GetType() const;
+	RegionType GetRegion() const;
+	int GetArrivalTime() const;
+	double GetHealth() const;
+	double GetOriginalHealth() const;
+	int GetPower() const;
+	int GetReloadedPeriod() const;
+	int GetDistance() const;
+	EnemyState GetState() const;
+	int GetFirstShotTime() const;
+	int GetKillTime() const;
+	int GetFrozenUntil() const;
+	color GetColor() const;
 
 	bool IsActive(int _time);
 	bool IsFrozen(int _time);

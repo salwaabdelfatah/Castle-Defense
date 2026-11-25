@@ -5,6 +5,7 @@ class Freezer :public Enemy
 {
 public:
 	Freezer(int _id, RegionType _region, int _arrivaltime, double _health, int _power, int _reloadedperiod);
+	~Freezer();
 	void Move(int _time);
 	void Act();
 	double IceAmount();
