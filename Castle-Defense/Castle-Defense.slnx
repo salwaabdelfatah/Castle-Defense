@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Castle-Defense.vcxproj" Id="aad118ab-8bc3-4e7e-b009-dffaa2828eb3" />
+</Solution>
