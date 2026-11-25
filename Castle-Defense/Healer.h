@@ -7,7 +7,9 @@ public:
 	Healer(int _id, RegionType _region, int _arrivaltime, double _health, int _power, int _reloadedperiod);
 	~Healer();
 	void Move(int _time);
-	void Attack();
+	void Act(int _time);
+	double HealAmount();
+	~Healer();
 
 };
 #endif
