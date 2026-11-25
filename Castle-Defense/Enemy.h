@@ -17,6 +17,7 @@ protected:
 	int FirstShotTime;
 	int KillTime;
 	int FrozenUntil;
+	int NextActionTime;   //first time step at which this enemy may act
 	void MoveOneStep(int _time);
 public:
 	Enemy(int _id, EnemyType _type, RegionType _region, int _arrivaltime,double _health, int _power, int _reloadedperiod);
@@ -33,6 +34,8 @@ public:
 	void SetFirstShotTime(int _time);
 	void SetKillTime(int _time);
 	void SetFrozenUntil(int _time);
+	void SetNextActionTime(int _time);
+	int  GetNextActionTime();
 
 	int GetID();
 	EnemyType GetType();
@@ -49,10 +52,12 @@ public:
 	int GetFrozenUntil();
 
 	bool IsActive(int _time);
+	bool IsFrozen(int _time);
 
-	virtual void Move(int _time) = 0;
-	virtual void Attack() = 0;
-
+	virtual void Move(int _time) =0;
+	virtual void Act(int _time) =0;   //each enemy type defines its own action
+	bool CanAct(int _time);
+	void ScheduleNextAction(int _time);
 	virtual ~Enemy();
 
  };

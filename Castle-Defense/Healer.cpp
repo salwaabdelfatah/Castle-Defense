@@ -12,7 +12,11 @@ void Healer::Move(int _time){
 	MoveOneStep(_time);
 }
 
-void Healer::Attack()
+void Healer::Act(int _time)
 {
 	// Phase 2: heal enemies within 2 meters
+}
+double Healer::HealAmount()
+{
+	return (double)Power / Distance;
 }

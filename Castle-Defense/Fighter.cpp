@@ -12,7 +12,7 @@ void Fighter::Move(int _time){
 	MoveOneStep(_time);
 }
 
-void Fighter::Attack()
+void Fighter::Act(int _time)
 {
 	// Phase 2
 }

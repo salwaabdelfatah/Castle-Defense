@@ -15,6 +15,7 @@ Enemy::Enemy(int _id, EnemyType _type, RegionType _region, int _arrivaltime, dou
 	FirstShotTime = -1;
 	KillTime = -1;
 	FrozenUntil = -1;
+	NextActionTime = _arrivaltime; //First Action happens at arrival 
 }
 
 Enemy::~Enemy()
@@ -52,18 +53,38 @@ EnemyState Enemy::GetState() { return State; }
 int Enemy::GetFirstShotTime() { return FirstShotTime; }
 int Enemy::GetKillTime() { return KillTime; }
 int Enemy::GetFrozenUntil() { return FrozenUntil; }
+bool Enemy::IsFrozen(int _time)
+{
+	return State==FROZEN && _time<FrozenUntil; //it means the enmey is still frozen for period of time 
+}
+
 void Enemy::MoveOneStep(int _time)
 {
-	if (State == FROZEN)
+	if (IsFrozen(_time))
 		return;
 
 	if (Distance <= MIN_DISTANCE)
 		return;
 
 	bool weak = Health < 0.5 * OriginalHealth;
-	int elapsed = _time - ArrivalTime;
+	int elapsed = _time - ArrivalTime; // move 1 meter after 2 time step 
 	if (weak && elapsed % 2 != 0)
 		return;
 
 	Distance--;
+}
+
+void Enemy::SetNextActionTime(int _time) { NextActionTime = _time; }
+int  Enemy::GetNextActionTime() { return NextActionTime; }
+bool Enemy::CanAct(int _time)
+{
+	if (!IsActive(_time))
+		return false;
+	if (IsFrozen(_time))
+		return false;
+	return _time >= NextActionTime; // if the enemy is in its reload period after it attacks or throw ice on a tower 
+}
+void Enemy::ScheduleNextAction(int _time)
+{
+	NextActionTime = _time+ ReloadPeriod +1; // when the enemy can attack again ? after its reload period pass 
 }
