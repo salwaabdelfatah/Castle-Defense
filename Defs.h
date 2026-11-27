@@ -15,7 +15,9 @@ enum EnemyType
 {
     FIGHTER = 1,
     HEALER = 2,
-    FREEZER = 3
+    FREEZER = 3,
+    ASSASSIN = 4,
+    VAMPIRE = 5
 };
 
 enum EnemyState
@@ -30,6 +32,7 @@ enum EnemyState
  const int MIN_DISTANCE = 2;
  const int MAX_KILLS_PER_STEP = 4;
  const int HEALER_PERCENT_MAX = 20;
+ const int FREEZE_THRESHOLD = 10;
 
 
 RegionType NextRegion(RegionType region);
