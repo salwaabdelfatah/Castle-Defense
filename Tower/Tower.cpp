@@ -3,7 +3,7 @@ const double Tower::FREEZE_THRESHOLD = 50.0;
 
 Tower::Tower()
     : id(0), region(REGION_A), health(0), power(0), maxTargets(0),
-    iceAccumulated(0), frozenStep(-1), damageTaken(0)
+    iceAccumulated(0), frozenFrom(0), frozenUntil(-1), damageTaken(0)
 {
 }
 
@@ -16,7 +16,8 @@ void Tower::Init(int _id, RegionType _region, double _health, int _maxTargets, d
     power = _power;
 
     iceAccumulated = 0;
-    frozenStep = -1;
+    frozenFrom = 0;
+    frozenUntil = -1;
     damageTaken = 0;
 }
 #pragma region getter
@@ -42,7 +43,7 @@ bool Tower::IsDestroyed() const
 }
 bool Tower::IsFrozen(int currentTime) const
 {
-    return currentTime == frozenStep;
+    return currentTime >= frozenFrom && currentTime <= frozenUntil;
 }
 
 void Tower::TakeDamage(double damage)
@@ -73,7 +74,11 @@ bool Tower::AddIce(double amount)
     return false;
 }
 
-void Tower::Freeze(int step)
+void Tower::Freeze(int fromStep, int steps)
 {
-    frozenStep = step;
+    if (steps <= 0)
+        return;
+
+    frozenFrom = fromStep;
+    frozenUntil = fromStep + steps - 1;
 }
